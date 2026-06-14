@@ -1,217 +1,208 @@
 <!DOCTYPE html>
-<html lang="sw" id="html-root">
+<html lang="sw">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CYBER TECH TEAM</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css"/>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<style>
+body{font-family:Arial;margin:0;background:#0a0a0a;color:#fff}
+header{background:#111;padding:15px;display:flex;justify-content:space-between;align-items:center}
+nav a{color:#00ff88;margin:0 10px;text-decoration:none}
+.btn{background:#00ff88;color:#000;padding:8px 15px;border:none;border-radius:5px;cursor:pointer}
+.card{background:#1a1a1a;margin:10px;padding:15px;border-radius:10px}
+input,textarea{width:100%;padding:8px;margin:5px 0;background:#222;color:#fff;border:1px solid #333;border-radius:5px}
+.hidden{display:none}
+.lang-btn{cursor:pointer}
+</style>
 </head>
 <body>
 
+<header>
+  <h2>CYBER TECH TEAM</h2>
+  <nav>
+    <a href="#home" data-sw="Nyumbani" data-en="Home">Nyumbani</a>
+    <a href="#videos" data-sw="Video" data-en="Videos">Video</a>
+    <a href="#gallery" data-sw="Picha" data-en="Gallery">Picha</a>
+    <a href="#contact" data-sw="Wasiliana" data-en="Contact">Wasiliana</a>
+    <span class="lang-btn" onclick="setLang('sw')">SW</span> |
+    <span class="lang-btn" onclick="setLang('en')">EN</span>
+    <button id="loginBtn" class="btn">Login</button>
+    <button id="logoutBtn" class="btn hidden">Logout</button>
+  </nav>
+</header>
+
 <!-- LOGIN MODAL -->
-<div id="login-modal" class="modal-overlay hidden">
-  <div class="login-box">
-    <div class="login-logo">
-      <div class="logo-icon">⚡</div>
-      <h2>CYBER TECH TEAM</h2>
-      <p id="login-subtitle">Ingia kwenye akaunti yako</p>
-    </div>
-    <div id="login-error" class="login-error hidden"></div>
-    <input type="email" id="login-email" placeholder="Email yako" autocomplete="email"/>
-    <input type="password" id="login-password" placeholder="Nywila yako" autocomplete="current-password"/>
-    <button id="login-btn" class="btn-primary">Ingia</button>
-    <button class="btn-ghost" onclick="closeLogin()">Rudi Nyumbani</button>
-  </div>
+<div id="loginModal" class="hidden card" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999">
+  <h3 data-sw="Ingia" data-en="Login">Ingia</h3>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="pass" placeholder="Password">
+  <button class="btn" onclick="login()">Login</button>
+  <button class="btn" onclick="closeLogin()">Funga</button>
 </div>
 
-<!-- NAVBAR -->
-<nav id="navbar">
-  <div class="nav-brand" onclick="showPage('home')">
-    <span class="brand-icon">⚡</span>
-    <span class="brand-text">CYBER TECH TEAM</span>
-  </div>
-  <div class="nav-links" id="nav-links">
-    <a onclick="showPage('home')" class="nav-link active" data-page="home" data-sw="Nyumbani" data-en="Home">Nyumbani</a>
-    <a onclick="showPage('videos')" class="nav-link" data-page="videos" data-sw="Video" data-en="Videos">Video</a>
-    <a onclick="showPage('photos')" class="nav-link" data-page="photos" data-sw="Picha" data-en="Photos">Picha</a>
-    <a onclick="showPage('contact')" class="nav-link" data-page="contact" data-sw="Wasiliana" data-en="Contact">Wasiliana</a>
-  </div>
-  <div class="nav-actions">
-    <button class="lang-toggle" id="lang-btn" onclick="toggleLang()">🌐 EN</button>
-    <div class="user-area" id="user-area">
-      <img id="nav-avatar" class="nav-avatar hidden" src="" alt="Profile"/>
-      <button class="btn-login" onclick="openLogin()" id="login-nav-btn">
-        <span data-sw="Ingia" data-en="Login">Ingia</span>
-      </button>
-      <button class="btn-logout hidden" id="logout-btn" onclick="logoutUser()">
-        <span data-sw="Toka" data-en="Logout">Toka</span>
-      </button>
-    </div>
-  </div>
-  <button class="hamburger" id="hamburger" onclick="toggleMenu()">☰</button>
-</nav>
+<!-- HOME -->
+<section id="home" class="card">
+  <h1 data-sw="Karibu CYBER TECH TEAM" data-en="Welcome to CYBER TECH TEAM">Karibu CYBER TECH TEAM</h1>
+  <p data-sw="Tunatoa content bora za tech, tutorial na vitu vipya. Karibu sana!" data-en="We provide best tech content, tutorials and updates. Welcome!">Tunatoa content bora...</p>
+  <div id="profilePic"></div>
+</section>
 
-<!-- HOME PAGE -->
-<div id="page-home" class="page active">
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-badge" data-sw="Teknolojia ya Kisasa" data-en="Modern Technology">Teknolojia ya Kisasa</div>
-      <h1 class="hero-title">CYBER TECH<br/><span class="gradient-text">TEAM</span></h1>
-      <p class="hero-sub" data-sw="Karibu kwenye ulimwengu wa teknolojia! Tuko hapa kukusaidia kujifunza, kukua, na kufanikiwa katika dunia ya kidijitali." data-en="Welcome to the world of technology! We are here to help you learn, grow, and succeed in the digital world.">Karibu kwenye ulimwengu wa teknolojia! Tuko hapa kukusaidia kujifunza, kukua, na kufanikiwa katika dunia ya kidijitali.</p>
-      <div class="hero-btns">
-        <button class="btn-primary" onclick="showPage('videos')" data-sw="Tazama Video" data-en="Watch Videos">Tazama Video</button>
-        <button class="btn-outline" onclick="showPage('photos')" data-sw="Ona Picha" data-en="View Photos">Ona Picha</button>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="cyber-ring r1"></div>
-      <div class="cyber-ring r2"></div>
-      <div class="cyber-ring r3"></div>
-      <div class="center-icon">⚡</div>
-    </div>
-  </section>
+<!-- ADMIN DASHBOARD - Inaonekana wewe tu -->
+<section id="admin" class="card hidden">
+  <h2>Admin Dashboard</h2>
+  <h4>Upload Video</h4>
+  <input type="text" id="vTitle" placeholder="Title ya Video">
+  <textarea id="vDesc" placeholder="Maelezo marefu..."></textarea>
+  <input type="file" id="vFile" accept="video/*">
+  <input type="text" id="vLink" placeholder="Link yoyote - YouTube, Drive, nk">
+  <button class="btn" onclick="uploadVideo()">Upload Video</button>
 
-  <section class="features">
-    <div class="container">
-      <h2 class="section-title" data-sw="Tunachokutoa" data-en="What We Offer">Tunachokutoa</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🎬</div>
-          <h3 data-sw="Video za Elimu" data-en="Educational Videos">Video za Elimu</h3>
-          <p data-sw="Video bora za kujifunza teknolojia kwa lugha unayoielewa" data-en="Quality videos to learn technology in your own language">Video bora za kujifunza teknolojia kwa lugha unayoielewa</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📸</div>
-          <h3 data-sw="Picha za Tukio" data-en="Event Photos">Picha za Tukio</h3>
-          <p data-sw="Picha za matukio yetu na kumbukumbu za pamoja" data-en="Photos of our events and shared memories">Picha za matukio yetu na kumbukumbu za pamoja</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">💬</div>
-          <h3 data-sw="Maoni & Mazungumzo" data-en="Comments & Discussion">Maoni & Mazungumzo</h3>
-          <p data-sw="Shiriki mawazo yako na jumuiya yetu ya teknolojia" data-en="Share your thoughts with our tech community">Shiriki mawazo yako na jumuiya yetu ya teknolojia</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔗</div>
-          <h3 data-sw="Rasilimali za Bure" data-en="Free Resources">Rasilimali za Bure</h3>
-          <p data-sw="Viungo vya rasilimali muhimu za kujifunza teknolojia" data-en="Links to important resources for learning technology">Viungo vya rasilimali muhimu za kujifunza teknolojia</p>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
+  <h4>Upload Picha</h4>
+  <input type="text" id="iTitle" placeholder="Title ya Picha">
+  <textarea id="iDesc" placeholder="Maelezo..."></textarea>
+  <input type="file" id="iFile" accept="image/*">
+  <button class="btn" onclick="uploadImage()">Upload Picha</button>
+</section>
 
-<!-- VIDEOS PAGE -->
-<div id="page-videos" class="page hidden">
-  <div class="page-header">
-    <h1 data-sw="Video Zetu" data-en="Our Videos">Video Zetu</h1>
-    <p data-sw="Tazama video zetu za elimu na teknolojia" data-en="Watch our educational and technology videos">Tazama video zetu za elimu na teknolojia</p>
-  </div>
-  <div class="container">
-    <div id="videos-grid" class="videos-grid">
-      <div class="loading-state">
-        <div class="spinner"></div>
-        <p data-sw="Inapakia..." data-en="Loading...">Inapakia...</p>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- VIDEOS -->
+<section id="videos">
+  <h2 data-sw="Video Zetu" data-en="Our Videos">Video Zetu</h2>
+  <div id="videoList"></div>
+</section>
 
-<!-- PHOTOS PAGE -->
-<div id="page-photos" class="page hidden">
-  <div class="page-header">
-    <h1 data-sw="Picha Zetu" data-en="Our Photos">Picha Zetu</h1>
-    <p data-sw="Picha za matukio na shughuli zetu" data-en="Photos from our events and activities">Picha za matukio na shughuli zetu</p>
-  </div>
-  <div class="container">
-    <div id="photos-grid" class="photos-grid">
-      <div class="loading-state">
-        <div class="spinner"></div>
-        <p data-sw="Inapakia..." data-en="Loading...">Inapakia...</p>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- GALLERY -->
+<section id="gallery">
+  <h2 data-sw="Gallery" data-en="Gallery">Gallery</h2>
+  <div id="imageList"></div>
+</section>
 
-<!-- CONTACT PAGE -->
-<div id="page-contact" class="page hidden">
-  <div class="page-header">
-    <h1 data-sw="Wasiliana Nasi" data-en="Contact Us">Wasiliana Nasi</h1>
-    <p data-sw="Tupo hapa kukusaidia — wasiliana nasi leo!" data-en="We're here to help — contact us today!">Tupo hapa kukusaidia — wasiliana nasi leo!</p>
-  </div>
-  <div class="container">
-    <div class="contact-wrapper">
-      <div class="contact-info">
-        <div class="contact-card">
-          <div class="contact-icon">📱</div>
-          <h3 data-sw="WhatsApp Channel" data-en="WhatsApp Channel">WhatsApp Channel</h3>
-          <p data-sw="Jiunge na channel yetu kupata habari mpya za teknolojia" data-en="Join our channel to get latest tech news">Jiunge na channel yetu kupata habari mpya za teknolojia</p>
-          <a href="https://whatsapp.com/channel/0029VbD4cs9545umLznrK62V" target="_blank" class="btn-whatsapp">
-            <span class="wa-icon">📢</span>
-            <span data-sw="Fuata Channel" data-en="Follow Channel">Fuata Channel</span>
-          </a>
-        </div>
-        <div class="contact-card">
-          <div class="contact-icon">👥</div>
-          <h3 data-sw="WhatsApp Group" data-en="WhatsApp Group">WhatsApp Group</h3>
-          <p data-sw="Jiunge na group letu la majadiliano ya teknolojia" data-en="Join our technology discussion group">Jiunge na group letu la majadiliano ya teknolojia</p>
-          <a href="#" id="wa-group-btn" target="_blank" class="btn-whatsapp btn-group">
-            <span class="wa-icon">👥</span>
-            <span data-sw="Jiunge na Group" data-en="Join Group">Jiunge na Group</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- CONTACT -->
+<section id="contact" class="card">
+  <h2 data-sw="Wasiliana Nasi" data-en="Contact Us">Wasiliana Nasi</h2>
+  <a href="https://whatsapp.com/channel/0029VbD4cs9545umLznrK62V" class="btn" target="_blank">Follow WhatsApp Channel</a>
+  <a href="#" class="btn" target="_blank" style="background:#25D366">Join WhatsApp Group</a>
+</section>
 
-<!-- VIDEO MODAL -->
-<div id="video-modal" class="modal-overlay hidden">
-  <div class="media-modal">
-    <button class="modal-close" onclick="closeModal('video-modal')">✕</button>
-    <div id="video-modal-content"></div>
-  </div>
-</div>
+<script>
+// Firebase Config yako
+const firebaseConfig = {
+  apiKey: "AIzaSyD9SvoHhndN-j-Sl59qcdcDwHwB22UupvU",
+  authDomain: "nova-ec213.firebaseapp.com",
+  projectId: "nova-ec213",
+  storageBucket: "nova-ec213.firebasestorage.app",
+  messagingSenderId: "978338235926",
+  appId: "1:978338235926:web:6193ea73d8fcc8ded89737",
+  measurementId: "G-211R5KP10J"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+const storage = firebase.storage();
 
-<!-- PHOTO MODAL -->
-<div id="photo-modal" class="modal-overlay hidden">
-  <div class="media-modal">
-    <button class="modal-close" onclick="closeModal('photo-modal')">✕</button>
-    <div id="photo-modal-content"></div>
-  </div>
-</div>
+let currentLang = 'sw';
 
-<!-- PROFILE MODAL -->
-<div id="profile-modal" class="modal-overlay hidden">
-  <div class="profile-modal-box">
-    <button class="modal-close" onclick="closeModal('profile-modal')">✕</button>
-    <h2 data-sw="Wasifu Wangu" data-en="My Profile">Wasifu Wangu</h2>
-    <div class="profile-avatar-section">
-      <img id="profile-avatar-img" src="https://ui-avatars.com/api/?name=User&background=00f5ff&color=0a0a1a&size=120" class="profile-big-avatar" alt="Profile"/>
-      <label class="avatar-upload-btn">
-        <input type="file" id="avatar-file-input" accept="image/*" onchange="uploadAvatar(this)"/>
-        <span data-sw="Badilisha Picha" data-en="Change Photo">Badilisha Picha</span>
-      </label>
-    </div>
-    <div class="profile-info">
-      <p id="profile-email-display"></p>
-      <p id="profile-name-display"></p>
-    </div>
-  </div>
-</div>
+// Lugha
+function setLang(lang){
+  currentLang = lang;
+  document.querySelectorAll('[data-sw]').forEach(el=>{
+    el.innerText = el.getAttribute('data-'+lang);
+  })
+}
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-content">
-    <div class="footer-brand">
-      <span class="brand-icon">⚡</span> CYBER TECH TEAM
-    </div>
-    <p class="footer-copy" data-sw="© 2025 Cyber Tech Team. Haki zote zimehifadhiwa." data-en="© 2025 Cyber Tech Team. All rights reserved.">© 2025 Cyber Tech Team. Haki zote zimehifadhiwa.</p>
-  </div>
-</footer>
+// Auth
+document.getElementById('loginBtn').onclick = ()=>document.getElementById('loginModal').classList.remove('hidden');
+function closeLogin(){document.getElementById('loginModal').classList.add('hidden')}
+function login(){
+  auth.signInWithEmailAndPassword(email.value, pass.value)
+ .then(u=>{
+    if(u.user.email == 'mimi@gmail.com'){
+      document.getElementById('admin').classList.remove('hidden');
+    }
+    closeLogin();
+    loginBtn.classList.add('hidden');
+    logoutBtn.classList.remove('hidden');
+  }).catch(e=>alert(e.message))
+}
+logoutBtn.onclick = ()=>auth.signOut().then(()=>location.reload());
 
-<!-- Firebase SDKs -->
-<script type="module" src="app.js"></script>
+// Upload Video
+function uploadVideo(){
+  const file = vFile.files[0];
+  const ref = storage.ref('videos/'+Date.now()+'_'+file.name);
+  ref.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>{
+    db.ref('videos').push({
+      title:vTitle.value, desc:vDesc.value, url:url, link:vLink.value, time:Date.now()
+    });
+    alert('Video imepanda!');
+  }))
+}
+
+// Upload Image
+function uploadImage(){
+  const file = iFile.files[0];
+  const ref = storage.ref('images/'+Date.now()+'_'+file.name);
+  ref.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>{
+    db.ref('images').push({
+      title:iTitle.value, desc:iDesc.value, url:url, time:Date.now()
+    });
+    alert('Picha imepanda!');
+  }))
+}
+
+// Load Videos + Comments
+db.ref('videos').on('value', snap=>{
+  videoList.innerHTML = '';
+  snap.forEach(child=>{
+    const v = child.val();
+    videoList.innerHTML += `
+    <div class="card">
+      <h3>${v.title}</h3>
+      <video controls width="100%" src="${v.url}"></video>
+      <p>${v.desc}</p>
+      <a href="${v.link}" target="_blank" class="btn">Link Zaidi</a>
+      <div id="c-${child.key}"></div>
+      <input id="input-${child.key}" placeholder="Andika comment...">
+      <button class="btn" onclick="comment('videos','${child.key}')">Tuma</button>
+    </div>`;
+    loadComments('videos', child.key);
+  })
+})
+
+// Comment system
+function comment(type,id){
+  const text = document.getElementById('input-'+id).value;
+  db.ref('comments/'+type+'/'+id).push({
+    user:auth.currentUser.email, text:text, time:Date.now()
+  });
+}
+function loadComments(type,id){
+  db.ref('comments/'+type+'/'+id).on('value', snap=>{
+    let html = '';
+    snap.forEach(c=>{
+      const data = c.val();
+      html += `<p><b>${data.user}:</b> ${data.text}
+      ${auth.currentUser?.email=='mimi@gmail.com'?`<button onclick="reply('${type}','${id}','${c.key}')">Jibu</button>`:''}</p>`;
+    })
+    document.getElementById('c-'+id).innerHTML = html;
+  })
+}
+function reply(type,id,cid){
+  const rep = prompt('Andika jibu lako:');
+  db.ref('replies/'+type+'/'+id+'/'+cid).push({text:rep, time:Date.now()})
+}
+
+// Load Images
+db.ref('images').on('value', snap=>{
+  imageList.innerHTML = '';
+  snap.forEach(child=>{
+    const i = child.val();
+    imageList.innerHTML += `<div class="card"><h3>${i.title}</h3><img src="${i.url}" width="100%"><p>${i.desc}</p></div>`;
+  })
+})
+</script>
 </body>
 </html>
