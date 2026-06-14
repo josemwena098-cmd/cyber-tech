@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin Dashboard — CYBER TECH TEAM</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<link rel="stylesheet" href="admin.css"/>
+</head>
+<body class="admin-body">
+
+<!-- AUTH GATE — shown while checking -->
+<div id="auth-gate" class="auth-gate">
+  <div class="gate-box">
+    <div class="spinner"></div>
+    <p>Inathibitisha...</p>
+  </div>
+</div>
+
+<!-- ADMIN LAYOUT -->
+<div id="admin-layout" class="admin-layout hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <span>⚡</span> CTT Admin
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-link active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 Dashboard</a>
+      <a class="sidebar-link" data-tab="videos" onclick="switchTab('videos')">🎬 Video</a>
+      <a class="sidebar-link" data-tab="photos" onclick="switchTab('photos')">📸 Picha</a>
+      <a class="sidebar-link" data-tab="links" onclick="switchTab('links')">🔗 Viungo</a>
+      <a class="sidebar-link" data-tab="comments" onclick="switchTab('comments')">💬 Maoni</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button onclick="logoutAdmin()" class="btn-logout-admin">🚪 Toka</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <h1 class="topbar-title" id="tab-title">Dashboard</h1>
+      <div class="admin-user-info">
+        <span id="admin-email-display"></span>
+        <span class="admin-badge">ADMIN</span>
+      </div>
+    </header>
+
+    <!-- TAB: DASHBOARD -->
+    <div id="tab-dashboard" class="admin-tab active">
+      <div class="dash-stats">
+        <div class="stat-card">
+          <div class="stat-icon">🎬</div>
+          <div>
+            <div class="stat-num" id="stat-videos">0</div>
+            <div class="stat-label">Video</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📸</div>
+          <div>
+            <div class="stat-num" id="stat-photos">0</div>
+            <div class="stat-label">Picha</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💬</div>
+          <div>
+            <div class="stat-num" id="stat-comments">0</div>
+            <div class="stat-label">Maoni</div>
+          </div>
+        </div>
+      </div>
+      <div class="dash-welcome">
+        <h2>Karibu, Admin! 👋</h2>
+        <p>Tumia menu ya kushoto kupakia video, picha, au kujibu maoni ya watumiaji.</p>
+      </div>
+    </div>
+
+    <!-- TAB: VIDEOS -->
+    <div id="tab-videos" class="admin-tab hidden">
+      <div class="tab-header">
+        <h2>Simamia Video</h2>
+        <button class="btn-primary" onclick="openUploadModal('video')">+ Pakia Video</button>
+      </div>
+      <div id="admin-videos-list" class="admin-list"></div>
+    </div>
+
+    <!-- TAB: PHOTOS -->
+    <div id="tab-photos" class="admin-tab hidden">
+      <div class="tab-header">
+        <h2>Simamia Picha</h2>
+        <button class="btn-primary" onclick="openUploadModal('photo')">+ Pakia Picha</button>
+      </div>
+      <div id="admin-photos-list" class="admin-list"></div>
+    </div>
+
+    <!-- TAB: LINKS -->
+    <div id="tab-links" class="admin-tab hidden">
+      <div class="tab-header">
+        <h2>Viungo vya Muhimu</h2>
+        <button class="btn-primary" onclick="openLinkModal()">+ Ongeza Kiungo</button>
+      </div>
+      <div id="admin-links-list" class="admin-list"></div>
+    </div>
+
+    <!-- TAB: COMMENTS -->
+    <div id="tab-comments" class="admin-tab hidden">
+      <div class="tab-header">
+        <h2>Maoni ya Watumiaji</h2>
+      </div>
+      <div id="admin-comments-list" class="admin-list"></div>
+    </div>
+  </main>
+</div>
+
+<!-- UPLOAD MODAL -->
+<div id="upload-modal" class="modal-overlay hidden">
+  <div class="upload-modal-box">
+    <button class="modal-close" onclick="closeModal('upload-modal')">✕</button>
+    <h2 id="upload-modal-title">Pakia Video</h2>
+    <div class="upload-form">
+      <div class="form-group">
+        <label>Kichwa (Title)</label>
+        <input type="text" id="upload-title" placeholder="Weka kichwa hapa..."/>
+      </div>
+      <div class="form-group">
+        <label>Maelezo (Description)</label>
+        <textarea id="upload-desc" rows="5" placeholder="Andika maelezo ya kina hapa..."></textarea>
+      </div>
+      <div id="video-url-section" class="form-group">
+        <label>URL ya Video (YouTube, Vimeo, etc.)</label>
+        <input type="url" id="upload-video-url" placeholder="https://youtube.com/watch?v=..."/>
+      </div>
+      <div id="photo-file-section" class="form-group hidden">
+        <label>Pakia Picha</label>
+        <div class="file-upload-area" id="photo-drop-area">
+          <input type="file" id="photo-file-input" accept="image/*" onchange="previewPhoto(this)"/>
+          <div id="photo-preview-area">
+            <div class="upload-icon">📸</div>
+            <p>Bonyeza hapa au buruta picha</p>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Viungo vya Ziada (hiari)</label>
+        <div id="extra-links-container">
+          <div class="extra-link-row">
+            <input type="text" placeholder="Jina la kiungo" class="link-label-input"/>
+            <input type="url" placeholder="https://..." class="link-url-input"/>
+            <button class="btn-remove-link" onclick="removeExtraLink(this)">✕</button>
+          </div>
+        </div>
+        <button class="btn-add-link" onclick="addExtraLink()">+ Ongeza Kiungo</button>
+      </div>
+      <div id="upload-progress" class="upload-progress hidden">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <span id="progress-text">0%</span>
+      </div>
+      <div id="upload-error" class="upload-error hidden"></div>
+      <button class="btn-primary btn-full" id="upload-submit-btn" onclick="submitUpload()">
+        <span id="upload-btn-text">Pakia Sasa</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LINK MODAL -->
+<div id="link-modal" class="modal-overlay hidden">
+  <div class="upload-modal-box">
+    <button class="modal-close" onclick="closeModal('link-modal')">✕</button>
+    <h2>Ongeza Kiungo</h2>
+    <div class="upload-form">
+      <div class="form-group">
+        <label>Jina la Kiungo</label>
+        <input type="text" id="link-name" placeholder="Mfano: Course ya Python..."/>
+      </div>
+      <div class="form-group">
+        <label>URL</label>
+        <input type="url" id="link-url" placeholder="https://..."/>
+      </div>
+      <div class="form-group">
+        <label>Maelezo</label>
+        <textarea id="link-desc" rows="3" placeholder="Elezea kiungo hiki..."></textarea>
+      </div>
+      <button class="btn-primary btn-full" onclick="submitLink()">Hifadhi Kiungo</button>
+    </div>
+  </div>
+</div>
+
+<!-- REPLY MODAL -->
+<div id="reply-modal" class="modal-overlay hidden">
+  <div class="upload-modal-box">
+    <button class="modal-close" onclick="closeModal('reply-modal')">✕</button>
+    <h2>Jibu Maoni</h2>
+    <div class="original-comment" id="original-comment-display"></div>
+    <div class="upload-form">
+      <div class="form-group">
+        <label>Jibu lako</label>
+        <textarea id="reply-text" rows="4" placeholder="Andika jibu lako hapa..."></textarea>
+      </div>
+      <button class="btn-primary btn-full" onclick="submitReply()">Tuma Jibu</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="admin.js"></script>
+</body>
+</html>
