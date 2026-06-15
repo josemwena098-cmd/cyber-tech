@@ -6,89 +6,116 @@
 <title>CYBER TECH TEAM</title>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <style>
-body{font-family:Arial;margin:0;background:#0a0a0a;color:#fff}
-header{background:#111;padding:15px;display:flex;justify-content:space-between;align-items:center}
-nav a{color:#00ff88;margin:0 10px;text-decoration:none}
-.btn{background:#00ff88;color:#000;padding:8px 15px;border:none;border-radius:5px;cursor:pointer}
-.card{background:#1a1a1a;margin:10px;padding:15px;border-radius:10px}
-input,textarea{width:100%;padding:8px;margin:5px 0;background:#222;color:#fff;border:1px solid #333;border-radius:5px}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Orbitron',sans-serif;background:#000;color:#0f0;overflow-x:hidden}
+
+#loader{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center}
+#loader h1{font-size:2.5rem;color:#0ff;text-shadow:0 0 30px #0ff;animation:glitch 0.3s infinite}
+#code-line{font-family:monospace;font-size:1.3rem;color:#0f0;margin-top:30px;white-space:pre;line-height:1.8}
+@keyframes glitch{0%,100%{text-shadow:0 0 30px #0ff, 2px 0 red}50%{text-shadow:0 0 30px #0ff, -2px 0 cyan}}
+
+#main-content{opacity:0;transform:scale(0.9);filter:blur(10px);transition:all 1.5s ease}
+#main-content.show{opacity:1;transform:scale(1);filter:blur(0)}
+
+header{background:rgba(0,255,255,0.1);backdrop-filter:blur(15px);border-bottom:3px solid #0ff;padding:20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 0 40px #0ff;position:sticky;top:0;z-index:100}
+header h2{color:#0ff;text-shadow:0 0 20px #0ff;font-size:2rem}
+nav a{color:#0f0;margin:0 15px;text-decoration:none;font-weight:700;transition:0.3s;font-size:1.1rem}
+nav a:hover{color:#0ff;text-shadow:0 0 15px #0ff;transform:scale(1.2)}
+.btn{background:linear-gradient(45deg,#0ff,#0f0);color:#000;padding:12px 25px;border:none;border-radius:10px;cursor:pointer;font-weight:900;box-shadow:0 0 20px #0ff;transition:0.3s;font-family:'Orbitron'}
+.btn:hover{transform:scale(1.15) rotate(2deg);box-shadow:0 0 40px #0ff}
+
+.card{background:rgba(0,255,255,0.08);border:2px solid #0ff;border-radius:20px;padding:30px;margin:25px;backdrop-filter:blur(8px);box-shadow:0 0 30px rgba(0,255,255,0.4);transition:0.4s}
+.card:hover{box-shadow:0 0 50px #0ff;transform:translateY(-5px)}
+input,textarea{width:100%;padding:15px;margin:10px 0;background:#111;color:#0ff;border:2px solid #0ff;border-radius:10px;font-family:monospace;font-size:1rem}
+input:focus,textarea:focus{outline:none;box-shadow:0 0 25px #0ff;border-color:#0f0}
+
 .hidden{display:none}
-.lang-btn{cursor:pointer}
+video,img{border-radius:15px;border:3px solid #0ff;box-shadow:0 0 25px #0ff;width:100%;margin:10px 0}
+
+.glow-text{text-shadow:0 0 25px #0ff,0 0 50px #0ff;animation:glow 2s ease-in-out infinite}
+@keyframes glow{0%,100%{text-shadow:0 0 25px #0ff}50%{text-shadow:0 0 50px #0ff,0 0 80px #0ff}}
+
+.comment-box{border-left:4px solid #0ff;padding-left:15px;margin:10px 0;background:rgba(0,255,255,0.05)}
 </style>
 </head>
 <body>
 
+<!-- HACKER LOADING - Kali zaidi -->
+<div id="loader">
+  <h1 class="glow-text">CYBER TECH TEAM</h1>
+  <div id="code-line"></div>
+</div>
+
+<!-- MAIN SITE -->
+<div id="main-content">
+
 <header>
-  <h2>CYBER TECH TEAM</h2>
+  <h2 class="glow-text">CYBER TECH TEAM</h2>
   <nav>
     <a href="#home" data-sw="Nyumbani" data-en="Home">Nyumbani</a>
-    <a href="#videos" data-sw="Video" data-en="Videos">Video</a>
-    <a href="#gallery" data-sw="Picha" data-en="Gallery">Picha</a>
-    <a href="#contact" data-sw="Wasiliana" data-en="Contact">Wasiliana</a>
-    <span class="lang-btn" onclick="setLang('sw')">SW</span> |
-    <span class="lang-btn" onclick="setLang('en')">EN</span>
-    <button id="loginBtn" class="btn">Login</button>
-    <button id="logoutBtn" class="btn hidden">Logout</button>
+    <a href="#videos" data-sw="Video Vault" data-en="Video Vault">Video Vault</a>
+    <a href="#gallery" data-sw="Image Vault" data-en="Image Vault">Image Vault</a>
+    <a href="#contact" data-sw="Secure Link" data-en="Secure Link">Secure Link</a>
+    <span class="btn" onclick="setLang('sw')">SW</span>
+    <span class="btn" onclick="setLang('en')">EN</span>
+    <button id="loginBtn" class="btn">LOGIN</button>
+    <button id="logoutBtn" class="btn hidden">LOGOUT</button>
   </nav>
 </header>
 
-<!-- LOGIN MODAL -->
-<div id="loginModal" class="hidden card" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999">
-  <h3 data-sw="Ingia" data-en="Login">Ingia</h3>
-  <input type="email" id="email" placeholder="Email">
+<div id="loginModal" class="hidden card" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999;width:90%;max-width:450px">
+  <h3 class="glow-text" data-sw="ADMIN ACCESS" data-en="ADMIN ACCESS">ADMIN ACCESS</h3>
+  <input type="email" id="email" placeholder="Admin Email: mimi@gmail.com">
   <input type="password" id="pass" placeholder="Password">
-  <button class="btn" onclick="login()">Login</button>
-  <button class="btn" onclick="closeLogin()">Funga</button>
+  <button class="btn" onclick="login()">GRANT ACCESS</button>
+  <button class="btn" onclick="closeLogin()">DENY</button>
 </div>
 
-<!-- HOME -->
 <section id="home" class="card">
-  <h1 data-sw="Karibu CYBER TECH TEAM" data-en="Welcome to CYBER TECH TEAM">Karibu CYBER TECH TEAM</h1>
-  <p data-sw="Tunatoa content bora za tech, tutorial na vitu vipya. Karibu sana!" data-en="We provide best tech content, tutorials and updates. Welcome!">Tunatoa content bora...</p>
-  <div id="profilePic"></div>
+  <h1 class="glow-text" data-sw=">> SYSTEM ONLINE" data-en=">> SYSTEM ONLINE">CYBER TECH TEAM</h1>
+  <p data-sw="Hifadhi salama ya data imefunguliwa. Karibu Admin." data-en="Secure data vault unlocked. Welcome Admin.">Tunatoa content bora...</p>
 </section>
 
-<!-- ADMIN DASHBOARD - Inaonekana wewe tu -->
 <section id="admin" class="card hidden">
-  <h2>Admin Dashboard</h2>
-  <h4>Upload Video</h4>
-  <input type="text" id="vTitle" placeholder="Title ya Video">
-  <textarea id="vDesc" placeholder="Maelezo marefu..."></textarea>
+  <h2 class="glow-text">ROOT ADMIN DASHBOARD</h2>
+  <h4>[UPLOAD VIDEO]</h4>
+  <input type="text" id="vTitle" placeholder="Video Title">
+  <textarea id="vDesc" rows="5" placeholder="Maelezo marefu ya video..."></textarea>
   <input type="file" id="vFile" accept="video/*">
-  <input type="text" id="vLink" placeholder="Link yoyote - YouTube, Drive, nk">
-  <button class="btn" onclick="uploadVideo()">Upload Video</button>
+  <input type="text" id="vLink" placeholder="Link yoyote: YouTube, Drive, nk">
+  <button class="btn" onclick="uploadVideo()">UPLOAD VIDEO</button>
 
-  <h4>Upload Picha</h4>
-  <input type="text" id="iTitle" placeholder="Title ya Picha">
-  <textarea id="iDesc" placeholder="Maelezo..."></textarea>
+  <h4>[UPLOAD IMAGE]</h4>
+  <input type="text" id="iTitle" placeholder="Image Title">
+  <textarea id="iDesc" rows="4" placeholder="Maelezo ya picha..."></textarea>
   <input type="file" id="iFile" accept="image/*">
-  <button class="btn" onclick="uploadImage()">Upload Picha</button>
+  <button class="btn" onclick="uploadImage()">UPLOAD IMAGE</button>
 </section>
 
-<!-- VIDEOS -->
-<section id="videos">
-  <h2 data-sw="Video Zetu" data-en="Our Videos">Video Zetu</h2>
+<section id="videos" class="card">
+  <h2 class="glow-text" data-sw="VIDEO DATABASE" data-en="VIDEO DATABASE">VIDEO VAULT</h2>
   <div id="videoList"></div>
 </section>
 
-<!-- GALLERY -->
-<section id="gallery">
-  <h2 data-sw="Gallery" data-en="Gallery">Gallery</h2>
+<section id="gallery" class="card">
+  <h2 class="glow-text" data-sw="IMAGE ARCHIVE" data-en="IMAGE ARCHIVE">IMAGE VAULT</h2>
   <div id="imageList"></div>
 </section>
 
-<!-- CONTACT -->
 <section id="contact" class="card">
-  <h2 data-sw="Wasiliana Nasi" data-en="Contact Us">Wasiliana Nasi</h2>
-  <a href="https://whatsapp.com/channel/0029VbD4cs9545umLznrK62V" class="btn" target="_blank">Follow WhatsApp Channel</a>
-  <a href="#" class="btn" target="_blank" style="background:#25D366">Join WhatsApp Group</a>
+  <h2 class="glow-text" data-sw="SECURE CHANNELS" data-en="SECURE CHANNELS">CONTACT</h2>
+  <a href="https://whatsapp.com/channel/0029VbD4cs9545umLznrK62V" class="btn" target="_blank">WHATSAPP CHANNEL</a>
+  <a href="#" class="btn" target="_blank">WHATSAPP GROUP</a>
 </section>
 
+</div>
+
 <script>
-// Firebase Config yako
+// Firebase Config Yako
 const firebaseConfig = {
   apiKey: "AIzaSyD9SvoHhndN-j-Sl59qcdcDwHwB22UupvU",
   authDomain: "nova-ec213.firebaseapp.com",
@@ -100,107 +127,149 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db = firebase.database();
+const db = firebase.firestore(); // Hapa ndio fix - Firestore
 const storage = firebase.storage();
 
-let currentLang = 'sw';
+// HACKER LOADING KALI ZAIDI
+const codeLines = [
+  "> Initializing CYBER TECH SYSTEM...",
+  "> Connecting to nova-ec213.firebaseapp.com",
+  "> Establishing secure connection... DONE",
+  "> Scanning for admin: mimi@gmail.com... FOUND",
+  "> Bypassing firewall protocols...",
+  "> Decrypting video database... 45 files found",
+  "> Decrypting image archive... 120 files found",
+  "> Loading comment system... ACTIVE",
+  "> System integrity: 100%",
+  "> ACCESS GRANTED. Welcome CYBER TECH TEAM"
+];
+let lineIndex = 0;
+let charIndex = 0;
 
-// Lugha
+function typeCode(){
+  if(lineIndex < codeLines.length){
+    if(charIndex < codeLines[lineIndex].length){
+      document.getElementById('code-line').innerHTML += codeLines[lineIndex][charIndex];
+      charIndex++;
+      setTimeout(typeCode, 40);
+    } else {
+      document.getElementById('code-line').innerHTML += '\n';
+      lineIndex++;
+      charIndex = 0;
+      setTimeout(typeCode, 250);
+    }
+  } else {
+    setTimeout(()=>{
+      document.getElementById('loader').style.opacity = '0';
+      document.getElementById('main-content').classList.add('show');
+      setTimeout(()=>document.getElementById('loader').style.display='none', 1500);
+    }, 1200);
+  }
+}
+typeCode();
+
+// Lugha System
 function setLang(lang){
-  currentLang = lang;
   document.querySelectorAll('[data-sw]').forEach(el=>{
     el.innerText = el.getAttribute('data-'+lang);
   })
 }
 
-// Auth
+// Auth System
 document.getElementById('loginBtn').onclick = ()=>document.getElementById('loginModal').classList.remove('hidden');
 function closeLogin(){document.getElementById('loginModal').classList.add('hidden')}
 function login(){
   auth.signInWithEmailAndPassword(email.value, pass.value)
- .then(u=>{
+.then(u=>{
     if(u.user.email == 'mimi@gmail.com'){
       document.getElementById('admin').classList.remove('hidden');
+      alert('ROOT ACCESS GRANTED ✓');
     }
     closeLogin();
     loginBtn.classList.add('hidden');
     logoutBtn.classList.remove('hidden');
-  }).catch(e=>alert(e.message))
+  }).catch(e=>alert('ACCESS DENIED ✗: '+e.message))
 }
 logoutBtn.onclick = ()=>auth.signOut().then(()=>location.reload());
 
-// Upload Video
+// Upload Video - Firestore Version
 function uploadVideo(){
   const file = vFile.files[0];
+  if(!file){alert('Chagua video kwanza!');return}
   const ref = storage.ref('videos/'+Date.now()+'_'+file.name);
   ref.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>{
-    db.ref('videos').push({
+    db.collection('videos').add({
       title:vTitle.value, desc:vDesc.value, url:url, link:vLink.value, time:Date.now()
     });
-    alert('Video imepanda!');
-  }))
+    alert('Video uploaded successfully! ✓');
+    vTitle.value=''; vDesc.value=''; vLink.value=''; vFile.value='';
+  })).catch(e=>alert('Error: '+e.message))
 }
 
-// Upload Image
+// Upload Image - Firestore Version
 function uploadImage(){
   const file = iFile.files[0];
+  if(!file){alert('Chagua picha kwanza!');return}
   const ref = storage.ref('images/'+Date.now()+'_'+file.name);
   ref.put(file).then(snap=>snap.ref.getDownloadURL().then(url=>{
-    db.ref('images').push({
+    db.collection('images').add({
       title:iTitle.value, desc:iDesc.value, url:url, time:Date.now()
     });
-    alert('Picha imepanda!');
-  }))
+    alert('Image uploaded! ✓');
+    iTitle.value=''; iDesc.value=''; iFile.value='';
+  })).catch(e=>alert('Error: '+e.message))
 }
 
-// Load Videos + Comments
-db.ref('videos').on('value', snap=>{
+// Load Videos + Comments - Firestore
+db.collection('videos').orderBy('time','desc').onSnapshot(snap=>{
   videoList.innerHTML = '';
-  snap.forEach(child=>{
-    const v = child.val();
+  snap.forEach(doc=>{
+    const v = doc.data();
     videoList.innerHTML += `
     <div class="card">
       <h3>${v.title}</h3>
-      <video controls width="100%" src="${v.url}"></video>
+      <video controls src="${v.url}"></video>
       <p>${v.desc}</p>
-      <a href="${v.link}" target="_blank" class="btn">Link Zaidi</a>
-      <div id="c-${child.key}"></div>
-      <input id="input-${child.key}" placeholder="Andika comment...">
-      <button class="btn" onclick="comment('videos','${child.key}')">Tuma</button>
+      ${v.link?`<a href="${v.link}" target="_blank" class="btn">OPEN LINK</a>`:''}
+      <div id="c-${doc.id}"></div>
+      <input id="input-${doc.id}" placeholder="Andika comment...">
+      <button class="btn" onclick="comment('videos','${doc.id}')">Send</button>
     </div>`;
-    loadComments('videos', child.key);
+    loadComments('videos', doc.id);
   })
 })
 
-// Comment system
 function comment(type,id){
+  if(!auth.currentUser){alert('Login kwanza!');return}
   const text = document.getElementById('input-'+id).value;
-  db.ref('comments/'+type+'/'+id).push({
-    user:auth.currentUser.email, text:text, time:Date.now()
+  if(text.trim()=='')return;
+  db.collection('comments').add({
+    type:type, postId:id, user:auth.currentUser.email, text:text, time:Date.now()
   });
+  document.getElementById('input-'+id).value='';
 }
 function loadComments(type,id){
-  db.ref('comments/'+type+'/'+id).on('value', snap=>{
-    let html = '';
-    snap.forEach(c=>{
-      const data = c.val();
-      html += `<p><b>${data.user}:</b> ${data.text}
-      ${auth.currentUser?.email=='mimi@gmail.com'?`<button onclick="reply('${type}','${id}','${c.key}')">Jibu</button>`:''}</p>`;
+  db.collection('comments').where('type','==',type).where('postId','==',id).orderBy('time','asc').onSnapshot(snap=>{
+    let html = '<h4>Comments:</h4>';
+    snap.forEach(doc=>{
+      const data = doc.data();
+      html += `<div class="comment-box"><b>${data.user}:</b> ${data.text}
+      ${auth.currentUser?.email=='mimi@gmail.com'?`<button class="btn" style="padding:5px 10px;font-size:12px" onclick="reply('${doc.id}')">Reply</button>`:''}</div>`;
     })
     document.getElementById('c-'+id).innerHTML = html;
   })
 }
-function reply(type,id,cid){
+function reply(commentId){
   const rep = prompt('Andika jibu lako:');
-  db.ref('replies/'+type+'/'+id+'/'+cid).push({text:rep, time:Date.now()})
+  if(rep) db.collection('replies').add({commentId:commentId, text:rep, time:Date.now()})
 }
 
-// Load Images
-db.ref('images').on('value', snap=>{
+// Load Images - Firestore
+db.collection('images').orderBy('time','desc').onSnapshot(snap=>{
   imageList.innerHTML = '';
-  snap.forEach(child=>{
-    const i = child.val();
-    imageList.innerHTML += `<div class="card"><h3>${i.title}</h3><img src="${i.url}" width="100%"><p>${i.desc}</p></div>`;
+  snap.forEach(doc=>{
+    const i = doc.data();
+    imageList.innerHTML += `<div class="card"><h3>${i.title}</h3><img src="${i.url}"><p>${i.desc}</p></div>`;
   })
 })
 </script>
